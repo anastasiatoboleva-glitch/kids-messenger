@@ -2,352 +2,524 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Детский мессенджер</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Детский Чат - Безопасное общение</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', 'Comic Neue', cursive; 
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%); 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 10px; 
         }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
+        .phone-app { 
+            width: 100%; 
+            max-width: 450px; 
+            height: 90vh; 
+            background: white; 
+            border-radius: 40px; 
+            overflow: hidden; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .app-header { 
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%); 
+            padding: 20px; 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+        }
+        .app-header h1 { font-size: 20px; display: flex; align-items: center; gap: 10px; }
+        .header-buttons { display: flex; gap: 10px; }
+        .header-btn { 
+            background: rgba(255,255,255,0.2); 
+            border: none; 
+            color: white; 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            cursor: pointer; 
+        }
+        .login-screen { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 30px; 
+            background: linear-gradient(135deg, #FFE5E5 0%, #E0F7FA 100%); 
+        }
+        .kid-avatar { 
+            width: 120px; 
+            height: 120px; 
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53); 
+            border-radius: 60px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 48px; 
+            margin-bottom: 30px; 
+        }
+        .login-screen input { 
+            width: 100%; 
+            padding: 15px; 
+            border: 2px solid #FF6B6B; 
+            border-radius: 30px; 
+            font-size: 16px; 
+            margin-bottom: 15px; 
+        }
+        .login-screen button { 
+            width: 100%; 
+            padding: 15px; 
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53); 
+            color: white; 
+            border: none; 
+            border-radius: 30px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+        }
+        .parent-btn { background: #95a5a6; margin-top: 10px; }
+        .chat-screen { flex: 1; display: flex; flex-direction: column; background: #f8f9fa; }
+        .messages-area { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .message { 
+            max-width: 80%; 
+            padding: 10px 15px; 
+            border-radius: 20px; 
+            word-wrap: break-word; 
+            animation: fadeIn 0.3s; 
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .message.my { 
+            align-self: flex-end; 
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53); 
+            color: white; 
+            border-bottom-right-radius: 5px; 
+        }
+        .message.other { 
+            align-self: flex-start; 
+            background: white; 
+            color: #333; 
+            border-bottom-left-radius: 5px; 
+        }
+        .message-name { font-size: 11px; margin-bottom: 5px; opacity: 0.8; font-weight: bold; }
+        .message-text { font-size: 14px; }
+        .message-time { font-size: 10px; margin-top: 5px; opacity: 0.6; }
+        .input-area { 
+            padding: 15px; 
+            background: white; 
+            display: flex; 
+            gap: 10px; 
+            border-top: 1px solid #eee; 
+        }
+        .input-area input { 
+            flex: 1; 
+            padding: 12px; 
+            border: 2px solid #FFE5E5; 
+            border-radius: 25px; 
+            font-size: 14px; 
+        }
+        .input-area button { 
+            padding: 12px 20px; 
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53); 
+            color: white; 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer; 
+        }
+        .online-list { 
+            padding: 8px 15px; 
+            background: white; 
+            border-bottom: 1px solid #eee; 
+            font-size: 12px; 
+            color: #666;
             display: flex;
-            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
             align-items: center;
         }
-        
-        .chat-container {
-            width: 100%;
-            max-width: 500px;
-            height: 90vh;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+        .online-user { 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 5px; 
+            background: #e8f5e9; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
         }
-        
-        .chat-header {
-            background: #FF6600;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-        }
-        
-        .messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            background: #f5f5f5;
-        }
-        
-        .message {
-            margin-bottom: 10px;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .message.user {
-            align-items: flex-end;
-        }
-        
-        .message.bot {
-            align-items: flex-start;
-        }
-        
-        .message-bubble {
-            max-width: 70%;
-            padding: 10px 15px;
-            border-radius: 18px;
-            word-wrap: break-word;
-        }
-        
-        .user .message-bubble {
-            background: #FF6600;
-            color: white;
-            border-bottom-right-radius: 5px;
-        }
-        
-        .bot .message-bubble {
-            background: white;
-            color: #333;
-            border-bottom-left-radius: 5px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        .message-time {
-            font-size: 11px;
-            color: #999;
-            margin-top: 5px;
-        }
-        
-        .input-area {
-            padding: 15px;
-            background: white;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .input-area input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            outline: none;
-            font-size: 16px;
-        }
-        
-        .input-area input:focus {
-            border-color: #FF6600;
-        }
-        
-        .input-area button {
-            background: #FF6600;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        
-        .input-area button:active {
-            transform: scale(0.95);
-        }
-        
-        .emoji-picker {
-            display: none;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 10px;
-            padding: 10px;
-            background: white;
-            border-top: 1px solid #eee;
-        }
-        
-        .emoji-picker span {
-            font-size: 28px;
-            text-align: center;
-            cursor: pointer;
-            padding: 5px;
-        }
-        
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #f00;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: fall 2s linear forwards;
-        }
-        
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        
-        .toolbar {
-            display: flex;
-            gap: 10px;
-            padding: 10px 15px;
-            background: white;
-
-
-border-bottom: 1px solid #eee;
-        }
-        
-        .toolbar button {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 5px;
-        }
-        
-        .login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .login-box {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            width: 90%;
-            max-width: 300px;
-        }
-        
-        .login-box input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            font-size: 16px;
-        }
-        
-        .login-box button {
-            background: #FF6600;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-        }
+        .online-dot { width: 8px; height: 8px; background: #4caf50; border-radius: 50%; display: inline-block; }
+        .confetti { position: fixed; width: 10px; height: 10px; animation: fall 2s linear; pointer-events: none; z-index: 1000; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
+        .parent-panel { flex: 1; overflow-y: auto; padding: 15px; background: #f8f9fa; }
+        .card { background: white; border-radius: 20px; padding: 15px; margin-bottom: 15px; }
+        .message-log { padding: 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+        .bad-word-warning { color: #ff6b6b; font-size: 12px; margin-top: 5px; }
+        .tab-buttons { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tab-btn { flex: 1; padding: 10px; background: #e0e0e0; border: none; border-radius: 20px; cursor: pointer; }
+        .tab-btn.active { background: #FF6B6B; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
-    <div class="login-screen" id="loginScreen">
-        <div class="login-box">
-            <h2>👋 Привет!</h2>
-            <p>Введите своё имя</p>
-            <input type="text" id="userName" placeholder="Твоё имя" maxlength="20">
-            <button onclick="login()">Войти</button>
-        </div>
-    </div>
+<div class="phone-app" id="app"></div>
+
+<script>
+// ========== ОБЩИЙ ЧАТ ДЛЯ ДЕТЕЙ ==========
+let currentUser = null;
+let allMessages = [];
+let onlineUsers = new Set();
+let refreshInterval = null;
+
+// Загрузка сообщений из localStorage (общее хранилище для всех)
+function loadMessages() {
+    const saved = localStorage.getItem('kids_chat_messages');
+    if (saved) {
+        allMessages = JSON.parse(saved);
+    } else {
+        allMessages = [{
+            id: Date.now(),
+            userName: '🤖 Безопасный чат',
+            text: '🌟 Добро пожаловать в безопасный детский чат! 🌟\n\n📜 Правила:\n• Будь вежливым\n• Не обижай других\n• Плохие слова заменяются на ***\n\nПриятного общения! 🎉',
+            time: new Date().toLocaleTimeString().slice(0,5),
+            isSystem: true
+        }];
+        saveMessages();
+    }
+}
+
+function saveMessages() {
+    localStorage.setItem('kids_chat_messages', JSON.stringify(allMessages));
+    // Обновляем счетчик сообщений для родительской панели
+    if (window.updateParentMessages) window.updateParentMessages();
+}
+
+// Фильтр плохих слов
+const badWords = ['дурак', 'глупый', 'плохой', 'урод', 'идиот', 'тупой', 'злой', 'фигня', 'херня', 'заткнись', 'пошел', 'сволочь', 'дебил', 'кретин', 'тупица'];
+
+function filterBadWords(text) {
+    let filtered = text;
+    let wasFiltered = false;
+    badWords.forEach(word => {
+        const regex = new RegExp(word, 'gi');
+        if (regex.test(filtered)) wasFiltered = true;
+        filtered = filtered.replace(regex, '***');
+    });
+    return { text: filtered, wasFiltered };
+}
+
+function showConfetti() {
+    for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 2000);
+    }
+}
+
+// Экран входа
+function showLogin() {
+    if (refreshInterval) clearInterval(refreshInterval);
     
-    <div class="chat-container" id="chatContainer" style="display: none;">
-        <div class="chat-header">
-            🎈 Детский мессенджер 🎈
+    document.getElementById('app').innerHTML = `
+        <div class="login-screen">
+            <div class="kid-avatar">👧🧒👦</div>
+            <h2 style="margin-bottom: 10px;">Детский Безопасный Чат</h2>
+            <p style="margin-bottom: 20px; color: #666; text-align: center;">✨ Общайся с друзьями безопасно! ✨</p>
+            <input type="text" id="kid-name" placeholder="Как тебя зовут?" autocomplete="off" maxlength="15">
+            <button onclick="login()">Войти в чат</button>
+            <button onclick="showParentLogin()" class="parent-btn">👨‍👩‍👧 Режим родителей</button>
+            <div id="login-error" style="color: red; margin-top: 10px;"></div>
         </div>
-        <div class="toolbar">
-            <button onclick="showEmoji()">😊</button>
-            <button onclick="showConfetti()">🎉</button>
-            <button onclick="clearChat()">🗑️</button>
+    `;
+}
+
+// Вход ребенка
+window.login = function() {
+    const name = document.getElementById('kid-name').value.trim();
+    if (!name) {
+        document.getElementById('login-error').textContent = 'Напиши свое имя! 😊';
+        return;
+    }
+    if (name.length < 2) {
+        document.getElementById('login-error').textContent = 'Имя должно быть длиннее!';
+        return;
+    }
+    
+    currentUser = {
+        id: Date.now() + Math.random(),
+        name: name,
+        avatar: name[0].toUpperCase()
+    };
+    
+    localStorage.setItem('current_kid_name', name);
+    localStorage.setItem('current_user_type', 'kid');
+    
+    // Добавляем сообщение о входе
+    const enterMessage = {
+        id: Date.now(),
+        userName: '🤖 Система',
+        text: `✨ ${name} присоединился к чату! Поприветствуйте его/её! ✨`,
+        time: new Date().toLocaleTimeString().slice(0,5),
+        isSystem: true
+    };
+    allMessages.push(enterMessage);
+    saveMessages();
+    
+    showChat();
+};
+
+// Родительский вход
+window.showParentLogin = function() {
+    document.getElementById('app').innerHTML = `
+        <div class="login-screen">
+            <div class="kid-avatar">👨‍👩‍👧</div>
+            <h2 style="margin-bottom: 10px;">Родительский контроль</h2>
+            <p style="margin-bottom: 20px; color: #666;">Введите пароль: <strong>1234</strong></p>
+            <input type="password" id="parent-password" placeholder="Пароль">
+            <button onclick="parentLogin()">Войти</button>
+            <button onclick="showLogin()" style="background:#95a5a6; margin-top:10px;">← Назад</button>
+            <div id="login-error" style="color: red; margin-top: 10px;"></div>
         </div>
-        <div class="messages" id="messages">
-            <div class="message bot">
-                <div class="message-bubble">
-                    Привет! Я твой помощник. Здесь можно общаться и веселиться! 🎈
+    `;
+};
+
+window.parentLogin = function() {
+    const password = document.getElementById('parent-password').value;
+    if (password === '1234') {
+        currentUser = {
+            id: 'parent',
+            name: 'Родитель',
+            avatar: '👨‍👩‍👧',
+            isParent: true
+        };
+        localStorage.setItem('current_user_type', 'parent');
+        showParentPanel();
+    } else {
+        document.getElementById('login-error').textContent = 'Неверный пароль! Попробуйте 1234';
+    }
+};
+
+// Родительская панель
+function showParentPanel() {
+    if (refreshInterval) clearInterval(refreshInterval);
+    
+    function renderParentPanel() {
+        const messagesList = [...allMessages].reverse();
+        
+        // Статистика по фильтрам
+        let filteredCount = 0;
+        allMessages.forEach(msg => {
+            if (msg.wasFiltered) filteredCount++;
+        });
+        
+        // Уникальные пользователи
+        const uniqueUsers = [...new Set(allMessages.filter(m => !m.isSystem).map(m => m.userName))];
+        
+        document.getElementById('app').innerHTML = `
+            <div class="app-header">
+                <h1><span>👨‍👩‍👧</span> Родительский контроль</h1>
+                <div class="header-buttons">
+                    <button class="header-btn" onclick="showLogin()">Выйти</button>
                 </div>
-                <div class="message-time">Только что</div>
             </div>
-        </div>
-        <div class="emoji-picker" id="emojiPicker">
-            <span>😀</span> <span>😂</span> <span>🥰</span> <span>😎</span> <span>🎉</span> <span>❤️</span>
-            <span>👍</span> <span>🎈</span> <span>🐶</span> <span>🐱</span> <span>🌟</span> <span>🎵</span>
-        </div>
-        <div class="input-area">
-            <input type="text" id="messageInput" placeholder="Напиши сообщение..." onkeypress="if(event.key === 'Enter') sendMessage()">
-            <button onclick="sendMessage()">📤</button>
-        </div>
-    </div>
+            <div class="parent-panel">
+                <div class="card">
+                    <h3>📊 Статистика</h3>
+                    <p>📝 Всего сообщений: ${allMessages.length}</p>
+                    <p>👥 Участников: ${uniqueUsers.length}</p>
+                    <p>🛡️ Заблокировано плохих слов: ${filteredCount}</p>
+                    <p>🔒 Фильтр плохих слов: <span style="color:green;">Активен</span></p>
+                </div>
+                
+                <div class="card">
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" onclick="switchTab('messages')">💬 Все сообщения</button>
+                        <button class="tab-btn" onclick="switchTab('users')">👥 Участники</button>
+                        <button class="tab-btn" onclick="switchTab('settings')">⚙️ Настройки</button>
+                    </div>
+                    
+                    <div id="tab-messages" class="tab-content active">
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            ${messagesList.map(msg => `
+                                <div class="message-log" style="${msg.wasFiltered ? 'background:#fff3f3;' : ''}">
+                                    <strong style="color: #FF6B6B;">${msg.userName}</strong>
+                                    <span style="font-size: 11px; color: #999;"> ${msg.time}</span>
+                                    ${msg.wasFiltered ? '<span style="background:#ff6b6b; color:white; padding:2px 6px; border-radius:10px; font-size:10px; margin-left:5px;">🚫 заменено</span>' : ''}
+                                    <div style="margin-top: 5px;">${msg.text}</div>
+                                </div>
+                            `).join('')}
+                            ${messagesList.length === 0 ? '<div style="text-align:center; padding:20px;">Сообщений пока нет</div>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div id="tab-users" class="tab-content">
+                        <div style="max-height: 400px; overflow-y: auto;">
+                            ${uniqueUsers.map(user => `
+                                <div class="message-log">
+                                    <strong>👤 ${user}</strong>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div id="tab-settings" class="tab-content">
+                        <button onclick="clearAllMessages()" style="background:#ff6b6b; color:white; border:none; padding:12px; border-radius:15px; width:100%; margin-top:10px;">🗑️ Очистить все сообщения</button>
+                        <button onclick="sendSystemMessage()" style="background:#4ECDC4; color:white; border:none; padding:12px; border-radius:15px; width:100%; margin-top:10px;">📢 Отправить сообщение всем</button>
+                        <div style="margin-top: 15px; padding: 10px; background: #f0f0f0; border-radius: 15px;">
+                            <p style="font-size: 12px;">🔒 Список заблокированных слов:</p>
+                            <p style="font-size: 11px; color: #666;">${badWords.join(', ')}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
     
-    <script>
-        let currentUser = '';
-        
-        function login() {
-            const name = document.getElementById('userName').value.trim();
-            if (name === '') {
-                alert('Пожалуйста, введите имя!');
-                return;
-            }
-            currentUser = name;
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('chatContainer').style.display = 'flex';
-            addMessage('bot', `Привет, ${name}! Рад тебя видеть! 🎉`);
+    window.switchTab = function(tab) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        document.getElementById(`tab-${tab}`).classList.add('active');
+        event.target.classList.add('active');
+    };
+    
+    window.clearAllMessages = function() {
+        if (confirm('Вы уверены? Все сообщения будут удалены без возможности восстановления!')) {
+            allMessages = [{
+                id: Date.now(),
+                userName: '🤖 Система',
+                text: '📝 История чата очищена родителями',
+                time: new Date().toLocaleTimeString().slice(0,5),
+                isSystem: true
+            }];
+            saveMessages();
+            renderParentPanel();
         }
+    };
+    
+    window.sendSystemMessage = function() {
+        const msg = prompt('Введите сообщение для всех детей:');
+        if (msg && msg.trim()) {
+            const systemMsg = {
+                id: Date.now(),
+                userName: '👨‍👩‍👧 Родитель',
+                text: `📢 ${msg}`,
+                time: new Date().toLocaleTimeString().slice(0,5),
+                isSystem: true
+            };
+            allMessages.push(systemMsg);
+            saveMessages();
+            renderParentPanel();
+        }
+    };
+    
+    window.updateParentMessages = renderParentPanel;
+    renderParentPanel();
+}
+
+// Основной чат
+function showChat() {
+    if (refreshInterval) clearInterval(refreshInterval);
+    
+    function renderChat() {
+        // Обновляем онлайн пользователей
+        const currentTime = Date.now();
+        onlineUsers.forEach((time, userId) => {
+            if (currentTime - time > 10000) onlineUsers.delete(userId);
+        });
+        onlineUsers.set(currentUser.id, currentTime);
         
-        function addMessage(sender, text) {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            
-            const now = new Date();
-            const time = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-            
-            messageDiv.innerHTML = `
-                <div class="message-bubble">${text}</div>
-                <div class="message-time">${time}</div>
+        document.getElementById('app').innerHTML = `
+            <div class="app-header">
+                <h1><span>${currentUser.avatar}</span> ${currentUser.name}</h1>
+                <div class="header-buttons">
+                    <button class="header-btn" onclick="showLogin()">Выйти</button>
+                </div>
+            </div>
+            <div class="online-list">
+                <span>👥 Онлайн:</span>
+                ${onlineUsers.size > 0 ? Array.from(onlineUsers.keys()).map(id => {
+                    const user = id === currentUser.id ? currentUser : null;
+                    return `<span class="online-user"><span class="online-dot"></span> ${user ? user.name : 'кто-то'}</span>`;
+                }).join('') : '<span>только вы</span>'}
+            </div>
+            <div class="chat-screen">
+                <div class="messages-area" id="messages-area"></div>
+                <div class="input-area">
+                    <input type="text" id="message-input" placeholder="Напиши сообщение..." autocomplete="off">
+                    <button onclick="sendMessage()">📨 Отправить</button>
+                </div>
+            </div>
+        `;
+        
+        // Загружаем сообщения
+        const messagesArea = document.getElementById('messages-area');
+        messagesArea.innerHTML = '';
+        
+        allMessages.forEach(msg => {
+            const isMy = msg.userName === currentUser.name && !msg.isSystem;
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${isMy ? 'my' : 'other'}`;
+            msgDiv.innerHTML = `
+                <div class="message-name">${msg.userName}</div>
+                <div class="message-text">${msg.text}</div>
+                <div class="message-time">${msg.time}</div>
             `;
-            
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeig
-
-
-ht;
+            messagesArea.appendChild(msgDiv);
+        });
+        
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+    
+    window.sendMessage = function() {
+        const input = document.getElementById('message-input');
+        let text = input.value.trim();
+        if (!text) return;
+        
+        const { text: filteredText, wasFiltered } = filterBadWords(text);
+        
+        if (wasFiltered) {
+            showConfetti();
         }
         
-        function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            if (text === '') return;
-            
-            addMessage('user', text);
-            input.value = '';
-            
-            setTimeout(() => {
-                let reply = '';
-                if (text.includes('привет') || text.includes('здравствуй')) {
-                    reply = `Привет, ${currentUser}! Как дела? 😊`;
-                } else if (text.includes('как дела')) {
-                    reply = 'У меня всё отлично! А у тебя? 🎈';
-                } else if (text.includes('спасибо')) {
-                    reply = 'Пожалуйста! Всегда рад помочь! 🌟';
-                } else if (text.includes('пока')) {
-                    reply = 'Пока! Приходи ещё! 👋';
-                } else {
-                    reply = `Интересно! Расскажи ещё, ${currentUser}! 😊`;
-                }
-                addMessage('bot', reply);
-            }, 500);
-        }
+        const newMsg = {
+            id: Date.now(),
+            userName: currentUser.name,
+            text: filteredText,
+            time: new Date().toLocaleTimeString().slice(0,5),
+            wasFiltered: wasFiltered
+        };
         
-        function showEmoji() {
-            const picker = document.getElementById('emojiPicker');
-            picker.style.display = picker.style.display === 'none' ? 'grid' : 'none';
-            
-            const emojis = document.querySelectorAll('#emojiPicker span');
-            emojis.forEach(emoji => {
-                emoji.onclick = function() {
-                    const input = document.getElementById('messageInput');
-                    input.value += this.textContent;
-                    picker.style.display = 'none';
-                };
-            });
-        }
-        
-        function showConfetti() {
-            for (let i = 0; i < 50; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * window.innerWidth + 'px';
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
-                confetti.style.width = Math.random() * 8 + 4 + 'px';
-                confetti.style.height = confetti.style.width;
-                document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 2000);
+        allMessages.push(newMsg);
+        saveMessages();
+        input.value = '';
+        renderChat();
+    };
+    
+    // Автообновление каждые 2 секунды
+    renderChat();
+    refreshInterval = setInterval(() => {
+        const saved = localStorage.getItem('kids_chat_messages');
+        if (saved) {
+            const newMessages = JSON.parse(saved);
+            if (JSON.stringify(newMessages) !== JSON.stringify(allMessages)) {
+                allMessages = newMessages;
+                renderChat();
             }
         }
-        
-        function clearChat() {
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML = '';
-            addMessage('bot', 'Чат очищен! Напиши что-нибудь 😊');
-        }
-        
-        // Для мобильных устройств
-        window.addEventListener('touchstart', function() {});
-    </script>
+    }, 2000);
+}
+
+// Запуск
+loadMessages();
+showLogin();
+</script>
 </body>
 </html>
